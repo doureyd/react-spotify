@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { setToken, setSearch, setArtists } from '../actions';
 import { searchArtists } from '../api/spotify';
 
@@ -37,7 +38,12 @@ class Artists extends Component {
         </div>
         <div>
           {this.props.artists.map(artist => (
-            <div key={artist.id}>{artist.name}</div>
+            <button
+              onClick={() => this.props.history.push(`/albums/${artist.id}`)}
+              key={artist.id}
+            >
+              {artist.name}
+            </button>
           ))}
         </div>
       </div>
@@ -57,7 +63,9 @@ const mapDispatchToProps = dispatch => ({
   onSetArtists: artists => dispatch(setArtists(artists)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Artists);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Artists)
+);

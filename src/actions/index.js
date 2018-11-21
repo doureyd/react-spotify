@@ -12,3 +12,8 @@ export const setArtists = artists => ({
   type: 'SET_ARTISTS',
   artists,
 });
+
+export const setAlbums = albums => ({
+  type: 'SET_ALBUMS',
+  albums,
+});
