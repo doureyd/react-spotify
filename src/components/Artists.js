@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setToken, setSearch } from '../actions';
+import { setToken, setSearch, setArtists } from '../actions';
+import { searchArtists } from '../api/spotify';
 
 class Artists extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: '' };
-  }
   handleChange = e => {
     this.props.onSetSearch(e.target.value);
+    if (e.target.value) {
+      searchArtists(this.props.token, e.target.value).then(data =>
+        this.props.onSetArtists(data.artists.items)
+      );
+    } else {
+      this.props.onSetArtists([]);
+    }
   };
   componentWillMount() {
     if (!this.props.token) {
@@ -31,6 +35,11 @@ class Artists extends Component {
             onChange={this.handleChange}
           />
         </div>
+        <div>
+          {this.props.artists.map(artist => (
+            <div key={artist.id}>{artist.name}</div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -45,6 +54,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSetToken: token => dispatch(setToken(token)),
   onSetSearch: search => dispatch(setSearch(search)),
+  onSetArtists: artists => dispatch(setArtists(artists)),
 });
 
 export default connect(
