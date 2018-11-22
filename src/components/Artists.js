@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { setToken, setSearch, setArtists } from '../actions';
+import { setToken, setSearch, setArtists, setSelectedArtist } from '../actions';
 import { searchArtists } from '../api/spotify';
 import { debounce } from '../api/utils';
 
@@ -60,7 +60,10 @@ class Artists extends Component {
                 }
                 followers={artist.followers.total}
                 popularity={artist.popularity}
-                onClick={() => this.props.history.push(`/albums/${artist.id}`)}
+                onClick={() => {
+                  this.props.onSetSelectedArtist(artist.name);
+                  this.props.history.push(`/albums/${artist.id}`);
+                }}
                 key={artist.id}
               />
             ))}
@@ -74,12 +77,14 @@ class Artists extends Component {
 const mapStateToProps = state => ({
   token: state.session.token,
   search: state.session.search,
+  artist: state.session.artist,
   artists: state.data.artists,
 });
 
 const mapDispatchToProps = dispatch => ({
   onSetToken: token => dispatch(setToken(token)),
   onSetSearch: search => dispatch(setSearch(search)),
+  onSetSelectedArtist: artist => dispatch(setSelectedArtist(artist)),
   onSetArtists: debounce(artists => dispatch(setArtists(artists)), 500),
 });
 

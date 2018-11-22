@@ -13,6 +13,11 @@ export const setArtists = artists => ({
   artists,
 });
 
+export const setSelectedArtist = artist => ({
+  type: 'SET_SELECTED_ARTIST',
+  artist,
+});
+
 export const setAlbums = albums => ({
   type: 'SET_ALBUMS',
   albums,
