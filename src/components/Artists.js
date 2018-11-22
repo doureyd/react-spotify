@@ -3,14 +3,24 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { setToken, setSearch, setArtists } from '../actions';
 import { searchArtists } from '../api/spotify';
+import { debounce } from '../api/utils';
+
+import { Grid, Card } from 'semantic-ui-react';
+import { ArtistCard } from './Cards';
+import './Artists.css';
 
 class Artists extends Component {
   handleChange = e => {
     this.props.onSetSearch(e.target.value);
     if (e.target.value) {
-      searchArtists(this.props.token, e.target.value).then(data =>
-        this.props.onSetArtists(data.artists.items)
-      );
+      searchArtists(this.props.token, e.target.value).then(data => {
+        if (typeof data.error === 'undefined') {
+          return this.props.onSetArtists(data.artists.items);
+        } else if (data.error.status === 401) {
+          // TODO : Improve user experience
+          window.location.replace(window.location.origin);
+        }
+      });
     } else {
       this.props.onSetArtists([]);
     }
@@ -27,26 +37,36 @@ class Artists extends Component {
   }
   render() {
     return (
-      <div className="artists">
-        <div>
+      <Grid container className="artists" centered>
+        <Grid.Row>
           <input
+            className="artists-input"
             type="search"
             placeholder="Search for an artists..."
             value={this.props.search}
             onChange={this.handleChange}
           />
-        </div>
-        <div>
-          {this.props.artists.map(artist => (
-            <button
-              onClick={() => this.props.history.push(`/albums/${artist.id}`)}
-              key={artist.id}
-            >
-              {artist.name}
-            </button>
-          ))}
-        </div>
-      </div>
+        </Grid.Row>
+        <Grid.Row>
+          <Card.Group className="ui four doubling stackable cards">
+            {this.props.artists.map(artist => (
+              <ArtistCard
+                name={artist.name}
+                image={
+                  (artist.images.length &&
+                    typeof artist.images[0].url != 'undefined' &&
+                    artist.images[0].url) ||
+                  'https://goo.gl/wTGLFL'
+                }
+                followers={artist.followers.total}
+                popularity={artist.popularity}
+                onClick={() => this.props.history.push(`/albums/${artist.id}`)}
+                key={artist.id}
+              />
+            ))}
+          </Card.Group>
+        </Grid.Row>
+      </Grid>
     );
   }
 }
@@ -60,7 +80,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onSetToken: token => dispatch(setToken(token)),
   onSetSearch: search => dispatch(setSearch(search)),
-  onSetArtists: artists => dispatch(setArtists(artists)),
+  onSetArtists: debounce(artists => dispatch(setArtists(artists)), 500),
 });
 
 export default withRouter(

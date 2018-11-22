@@ -14,14 +14,21 @@ class Albums extends Component {
       }
     }
     searchArtistAlbums(this.props.token, this.props.match.params.id).then(
-      data => this.props.onSetAlbums(data.items)
+      data => {
+        if (typeof data.error === 'undefined') {
+          return this.props.onSetAlbums(data.items);
+        } else if (data.error.status === 401) {
+          // TODO : Improve user experience
+          window.location.replace(window.location.origin);
+        }
+      }
     );
   }
   render() {
     return (
       <div className="albums">
         {this.props.albums.map(albums => (
-          <div>{albums.name}</div>
+          <div key={albums.id}>{albums.name}</div>
         ))}
       </div>
     );

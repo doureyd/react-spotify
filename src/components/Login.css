@@ -1,0 +1,30 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-btn {
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  height: 48px;
+  letter-spacing: 2px;
+  min-height: 0px;
+  min-width: 50px;
+  text-decoration: none solid rgb(255, 255, 255);
+  text-size-adjust: 100%;
+  vertical-align: middle;
+  width: 213.75px;
+  column-rule-color: rgb(255, 255, 255);
+  caret-color: rgb(255, 255, 255);
+  background: rgb(29, 185, 84) none repeat scroll 0% 0% / auto padding-box
+    border-box;
+  border: 0px solid rgba(0, 0, 0, 0);
+  border-radius: 500px 500px 500px 500px;
+  font: normal normal 700 normal 14px / 14px Circular, Helvetica, Arial,
+    sans-serif;
+  outline: rgb(255, 255, 255) none 0px;
+  padding: 16px 48px 18px;
+}
